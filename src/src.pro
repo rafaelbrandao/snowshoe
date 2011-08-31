@@ -10,6 +10,7 @@ SOURCES += \
     BrowserObject.cpp \
     BrowserWindow.cpp \
     DatabaseManager.cpp \
+    DownloadManagerWindow.cpp \
     PopupMenu.cpp \
     BookmarkFilter.cpp
 
@@ -19,6 +20,7 @@ HEADERS += \
     BrowserObject.h \
     BrowserWindow.h \
     DatabaseManager.h \
+    DownloadManagerWindow.h \
     PopupMenu.h \
     BookmarkFilter.h
 
@@ -66,6 +68,10 @@ macx {
 
 OTHER_FILES += \
     qml/main.qml \
+    qml/DownloadItem.qml \
+    qml/DownloadManager.qml \
+    qml/DownloadModel.qml \
+    qml/ProgressBar.qml \
     qml/Tab.qml \
     qml/TabWidget.qml \
     qml/TabWidget.js \

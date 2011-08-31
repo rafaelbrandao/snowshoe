@@ -20,6 +20,7 @@
 #include "BookmarkModel.h"
 #include "BrowserObject.h"
 #include "DatabaseManager.h"
+#include "DownloadManagerWindow.h"
 #include "PopupMenu.h"
 #include "qdesktopwebview.h"
 #include <QtCore/QCoreApplication>
@@ -38,6 +39,7 @@ BrowserWindow::BrowserWindow(const QStringList& urls)
     , m_view(new QSGView(this))
     , m_browserView(0)
     , m_popupMenu(new PopupMenu(this))
+    , m_downloadWindow(new DownloadManagerWindow(this))
 {
     setAttribute(Qt::WA_DeleteOnClose);
     setCentralWidget(m_view);
@@ -139,4 +141,7 @@ void BrowserWindow::setupShortcuts()
 
     QAction* fullScreenAction = createActionWithShortcut(QKeySequence(Qt::Key_F11));
     connect(fullScreenAction, SIGNAL(triggered()), m_browserView, SLOT(fullScreenActionTriggered()));
+
+    QAction* downloadManagerAction = createActionWithShortcut(QKeySequence(Qt::CTRL | Qt::Key_J));
+    connect(downloadManagerAction, SIGNAL(triggered()), m_downloadWindow, SLOT(show()));
 }

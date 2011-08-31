@@ -1,5 +1,4 @@
 /****************************************************************************
- *   Copyright (C) 2011  Andreas Kling <awesomekling@gmail.com>             *
  *   Copyright (C) 2011  Instituto Nokia de Tecnologia (INdT)               *
  *                                                                          *
  *   This file may be used under the terms of the GNU Lesser                *
@@ -15,55 +14,22 @@
  *   GNU Lesser General Public License for more details.                    *
  ****************************************************************************/
 
-#ifndef BrowserWindow_h
-#define BrowserWindow_h
+#ifndef DownloadManagerWindow_h
+#define DownloadManagerWindow_h
 
-#include "ApplicationStateTracker.h"
 #include <QtDeclarative/QSGView>
-#include <QtGui/QKeySequence>
 #include <QtGui/QMainWindow>
 
-class BrowserObject;
-class DownloadManagerWindow;
-class PopupMenu;
-class QSGItem;
-
-class BrowserWindow : public QMainWindow {
+class DownloadManagerWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    BrowserWindow(const QStringList& urls);
-    virtual ~BrowserWindow();
-
-    BrowserObject* browserObject() { return m_browserObject; }
-
-    void openUrlInNewTab(const QString& urlFromUserInput);
-
-public slots:
-    QPoint mapToGlobal(int x, int y);
-
-protected:
-    virtual void moveEvent(QMoveEvent*);
-    virtual void resizeEvent(QResizeEvent*);
+    DownloadManagerWindow(QWidget* parent = 0);
+    virtual ~DownloadManagerWindow();
 
 private:
-    friend class BrowserObject;
-
-    ApplicationStateTracker* stateTracker() { return &m_stateTracker; }
-
-    void openNewEmptyTab();
-
     void setupDeclarativeEnvironment();
-
-    QAction* createActionWithShortcut(const QKeySequence&);
-    void setupShortcuts();
-
-    ApplicationStateTracker m_stateTracker;
-    BrowserObject* m_browserObject;
     QSGView* m_view;
-    QSGItem* m_browserView;
-    PopupMenu* m_popupMenu;
-    DownloadManagerWindow* m_downloadWindow;
 };
 
 #endif

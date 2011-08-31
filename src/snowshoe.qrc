@@ -61,5 +61,20 @@
         <file alias="urlbar/btn_nav_refresh_pressed">images/urlbar/component_btn_nav_refresh_pressed.png</file>
         <file alias="urlbar/btn_nav_refresh_unpressed">images/urlbar/component_btn_nav_refresh_unpressed.png</file>
         <file>qml/Button.qml</file>
+        <file alias="download/download_btn_close_over">images/download/download_btn_close_over.png</file>
+        <file alias="download/download_btn_close_static">images/download/download_btn_close_static.png</file>
+        <file alias="download/download_icon">images/download/download_icon.png</file>
+        <file alias="download/window_mask">images/download/download_window_mask.png</file>
+        <file alias="download/hr_line">images/download/hr_line.png</file>
+        <file>qml/DownloadItem.qml</file>
+        <file>qml/DownloadManager.qml</file>
+        <file>qml/DownloadModel.qml</file>
+        <file>qml/ProgressBar.qml</file>
+        <file alias="download/downloading_base_bg">images/download/download_downloading_base_bg.png</file>
+        <file alias="download/downloaded_base_bg">images/download/download_downloaded_base_bg.png</file>
+        <file alias="download/progress_bar_base">images/download/download_progress_bar_base.png</file>
+        <file alias="download/progress_bar_fill">images/download/download_progress_bar_fill.png</file>
+        <file alias="download/window_header_base">images/download/download_window_header_base.png</file>
+        <file alias="download/window_bg_base">images/download/download_window_bg_base.png</file>
     </qresource>
 </RCC>
