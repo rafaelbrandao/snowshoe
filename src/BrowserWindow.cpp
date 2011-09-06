@@ -20,6 +20,7 @@
 #include "BookmarkModel.h"
 #include "BrowserObject.h"
 #include "DatabaseManager.h"
+#include "DownloadListModel.h"
 #include "DownloadManagerWindow.h"
 #include "PopupMenu.h"
 #include "qdesktopwebview.h"

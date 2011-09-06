@@ -15,6 +15,7 @@
  ****************************************************************************/
 
 import QtQuick 2.0
+import Snowshoe 1.0
 
 Item {
     id: root
@@ -31,6 +32,8 @@ Item {
             right: 5
             bottom: 5
         }
+
+        // FIXME: This is just for testing.
     }
 
     BorderImage {
@@ -82,6 +85,11 @@ Item {
             bottom: horizontalLine.top
             bottomMargin: 4
         }
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: DownloadModel.start("/home/rafael/temp_down.mp3", "http://thefmly.com/www/wp-content/uploads/2009/11/05-jack-penate-so-near.mp3")
+        }
     }
 
     Text {
@@ -91,7 +99,7 @@ Item {
         anchors.leftMargin: 6
         color: "#333"
         text: {
-            var k = downloadList.downloadingCount()
+            var k = downloadList.model.downloadingCount
             return k == 1 ? "1 file" : k + " files"
         }
     }
@@ -110,21 +118,12 @@ Item {
         }
         clip: true
         boundsBehavior: Flickable.StopAtBounds
-        model: DownloadModel { }
+        model: DownloadModel
         delegate: DownloadItem {
             file: filename
             status: statusText
             timestamp: timestampText
             progress: progressValue
-        }
-
-        function downloadingCount() {
-            var total = 0;
-            for (var i = 0; i < downloadList.model.count; ++i) {
-                if (downloadList.model.get(i).progressValue < 100)
-                    ++total;
-            }
-            return total;
         }
     }
 

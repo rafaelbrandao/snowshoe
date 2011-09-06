@@ -9,6 +9,8 @@ SOURCES += \
     BookmarkModel.cpp \
     BrowserObject.cpp \
     BrowserWindow.cpp \
+    DownloadItem.cpp \
+    DownloadListModel.cpp \
     DatabaseManager.cpp \
     DownloadManagerWindow.cpp \
     PopupMenu.cpp \
@@ -19,6 +21,8 @@ HEADERS += \
     BookmarkModel.h \
     BrowserObject.h \
     BrowserWindow.h \
+    DownloadItem.h \
+    DownloadListModel.h \
     DatabaseManager.h \
     DownloadManagerWindow.h \
     PopupMenu.h \

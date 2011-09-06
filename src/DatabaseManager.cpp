@@ -14,8 +14,10 @@
  *   GNU Lesser General Public License for more details.                    *
  ****************************************************************************/
 
-#include "BookmarkModel.h"
 #include "DatabaseManager.h"
+
+#include "BookmarkModel.h"
+#include "DownloadListModel.h"
 
 #include <QtCore/QDir>
 #include <QtCore/QString>
@@ -54,11 +56,14 @@ DatabaseManager::DatabaseManager()
 
     m_bookmarkModel = new BookmarkModel(m_database);
     m_bookmarkModel->setEditStrategy(QSqlTableModel::OnFieldChange);
+
+    m_downloadListModel = new DownloadListModel();
 }
 
 DatabaseManager::~DatabaseManager()
 {
     delete m_bookmarkModel;
+    delete m_downloadListModel;
 
     m_database.close();
 }
@@ -93,4 +98,9 @@ bool DatabaseManager::createTables()
 BookmarkModel* DatabaseManager::bookmarkDataBaseModel() const
 {
     return m_bookmarkModel;
+}
+
+DownloadListModel* DatabaseManager::downloadListModel() const
+{
+    return m_downloadListModel;
 }

@@ -17,6 +17,7 @@
 #include "ApplicationStateTracker.h"
 
 #include "BrowserWindow.h"
+#include "DownloadListModel.h"
 #include <QtCore/QSettings>
 
 const int IntervalForSavingStateInMilliseconds = 10000;

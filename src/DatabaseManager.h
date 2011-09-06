@@ -20,6 +20,7 @@
 #include <QtSql/QSqlDatabase>
 
 class BookmarkModel;
+class DownloadListModel;
 
 class DatabaseManager {
 public:
@@ -28,6 +29,7 @@ public:
     bool initialize();
 
     BookmarkModel* bookmarkDataBaseModel() const;
+    DownloadListModel* downloadListModel() const;
 
 protected:
     bool createTables();
@@ -39,6 +41,7 @@ private:
     static DatabaseManager* m_instance;
     QSqlDatabase m_database;
     BookmarkModel* m_bookmarkModel;
+    DownloadListModel* m_downloadListModel;
 };
 
 #endif

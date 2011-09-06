@@ -19,6 +19,7 @@
 #include "BookmarkFilter.h"
 #include "DatabaseManager.h"
 #include "qdesktopwebview.h"
+#include "DownloadListModel.h"
 
 #include <QtCore/QAbstractItemModel>
 #include <QtCore/QLatin1String>

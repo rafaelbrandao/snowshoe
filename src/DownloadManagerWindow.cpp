@@ -16,6 +16,10 @@
 
 #include "DownloadManagerWindow.h"
 
+#include "DatabaseManager.h"
+#include "DownloadListModel.h"
+
+#include <QtDeclarative/QDeclarativeContext>
 #include <QtGui/QApplication>
 
 DownloadManagerWindow::DownloadManagerWindow(QWidget* parent)
@@ -35,6 +39,9 @@ DownloadManagerWindow::~DownloadManagerWindow()
 
 void DownloadManagerWindow::setupDeclarativeEnvironment()
 {
+    QDeclarativeContext* context = m_view->rootContext();
+    context->setContextProperty("DownloadModel", DatabaseManager::instance()->downloadListModel());
+
     m_view->setResizeMode(QSGView::SizeRootObjectToView);
     m_view->setSource(QUrl("qrc:/qml/DownloadManager.qml"));
 }

@@ -22,6 +22,7 @@
 #include <QtCore/QTimer>
 
 class BrowserWindow;
+class DownloadDatabase;
 
 class ApplicationStateTracker : public QObject {
     Q_OBJECT
@@ -35,6 +36,9 @@ public:
 
     void updateUrlsOpened(const QStringList&);
     bool restoreUrlsOpened();
+
+    void storeDownloadsList();
+    void restoreDownloadsList();
 
 private slots:
     void saveState();

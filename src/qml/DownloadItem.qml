@@ -81,10 +81,7 @@ Item {
             id: cancelButtonMouseArea
             hoverEnabled: true
             anchors.fill: parent
-            onClicked: {
-                root.downloadCancelled(model.index)
-                root.ListView.view.model.remove(model.index)
-            }
+            onClicked: DownloadModel.cancel(model.index)
         }
     }
 
@@ -121,9 +118,9 @@ Item {
         anchors {
             top: progressBar.bottom
             left: progressBar.left
-            right: progressBar.right
+            right: timestampText.left
             topMargin: 2
-            rightMargin: 10
+            rightMargin: 2
         }
     }
 
