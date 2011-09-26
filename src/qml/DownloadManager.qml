@@ -66,11 +66,12 @@ Item {
 
     Image {
         id: horizontalLine
-        width: content.width
         fillMode: Image.TileHorizontally
         source: "qrc:///download/hr_line"
         anchors {
             top: content.top
+            left: content.left
+            right: content.right
             topMargin: 60
         }
     }

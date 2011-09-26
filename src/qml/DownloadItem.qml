@@ -30,12 +30,6 @@ Item {
     function isFinished() { return root.progress == 100 }
     signal downloadCancelled(int index)
 
-    MouseArea {
-        // FIXME: This MouseArea is just for testing and it should be removed later.
-        anchors.fill: parent
-        onClicked: root.ListView.view.model.set(model.index, {"progressValue": root.progress == 100 ? 0 : 100 })
-    }
-
     BorderImage {
         id: downloadBorder
         source: "qrc:///download/downloading_base_bg"
@@ -63,10 +57,10 @@ Item {
         id: downloadIcon
         source: "qrc:///download/download_icon"
         anchors {
-            top: downloadContent.top
-            left: downloadContent.left
-            topMargin: 5
-            leftMargin: 7
+            top: root.top
+            left: root.left
+            topMargin: 12
+            leftMargin: 12
         }
     }
 
@@ -74,14 +68,18 @@ Item {
         id: cancelButton
         source: cancelButtonMouseArea.containsMouse ? "qrc:///download/download_btn_close_over" : "qrc:///download/download_btn_close_static"
         anchors {
-            top: progressBar.top
-            right: downloadContent.right
+            bottom: progressBar.bottom
+            right: root.right
+            rightMargin: 12
         }
         MouseArea {
             id: cancelButtonMouseArea
             hoverEnabled: true
             anchors.fill: parent
-            onClicked: DownloadModel.cancel(model.index)
+            onClicked: {
+                DownloadModel.cancel(model.index)
+                root.downloadCancelled(model.index)
+            }
         }
     }
 
@@ -91,10 +89,12 @@ Item {
         font.pixelSize: 16
         color: "#111"
         anchors {
-            top: downloadIcon.top
+            top: root.top
             left: downloadIcon.right
             right: cancelButton.left
+            topMargin: 12
             leftMargin: 8
+            rightMargin: 8
         }
     }
 
@@ -103,10 +103,12 @@ Item {
         progress: 50
         height: 14
         anchors {
-            left: filename.left
+            top: filename.bottom
+            left: downloadIcon.right
             right: cancelButton.left
-            bottom: downloadIcon.bottom
-            rightMargin: 5
+            topMargin: 2
+            leftMargin: 8
+            rightMargin: 8
         }
     }
 
@@ -116,11 +118,12 @@ Item {
         color: "#919292"
         elide: Text.ElideRight
         anchors {
-            top: progressBar.bottom
-            left: progressBar.left
+            left: downloadIcon.right
             right: timestampText.left
-            topMargin: 2
-            rightMargin: 2
+            bottom: root.bottom
+            leftMargin: 8
+            rightMargin: 8
+            bottomMargin: 12
         }
     }
 
@@ -130,10 +133,10 @@ Item {
         color: "#bdbdbd"
         visible: false
         anchors {
-            top: filename.bottom
-            topMargin: 2
-            right: cancelButton.left
-            rightMargin: 10
+            right: root.right
+            bottom: root.bottom
+            rightMargin: 12
+            bottomMargin: 12
         }
     }
 
@@ -141,11 +144,12 @@ Item {
         State {
             when: root.isFinished()
             PropertyChanges { target: root; height: 59 }
-            PropertyChanges { target: statusText; color: "#bdbdbd"; anchors.top: filename.bottom }
+            PropertyChanges { target: statusText; color: "#bdbdbd"; }
             PropertyChanges { target: filename; color: "#9fa0a0" }
             PropertyChanges { target: downloadBorder; source: "qrc:///download/downloaded_base_bg" }
             PropertyChanges { target: progressBar; visible: false }
             PropertyChanges { target: timestampText; visible: true }
+            PropertyChanges { target: cancelButton; anchors.bottom: filename.bottom }
         }
     ]
 }
