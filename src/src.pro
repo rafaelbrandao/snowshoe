@@ -9,7 +9,7 @@ SOURCES += \
     BookmarkModel.cpp \
     BrowserObject.cpp \
     BrowserWindow.cpp \
-    DownloadItem.cpp \
+    DownloadListItem.cpp \
     DownloadListModel.cpp \
     DatabaseManager.cpp \
     DownloadManagerWindow.cpp \
@@ -21,7 +21,7 @@ HEADERS += \
     BookmarkModel.h \
     BrowserObject.h \
     BrowserWindow.h \
-    DownloadItem.h \
+    DownloadListItem.h \
     DownloadListModel.h \
     DatabaseManager.h \
     DownloadManagerWindow.h \

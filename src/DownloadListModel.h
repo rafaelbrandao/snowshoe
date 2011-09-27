@@ -4,7 +4,7 @@
 #include <QtCore/QAbstractListModel>
 #include <QtCore/QUrl>
 
-class DownloadItem;
+class DownloadListItem;
 
 class DownloadListModel : public QAbstractListModel {
     Q_OBJECT
@@ -36,7 +36,7 @@ private:
 
     QHash<int, QByteArray> m_roleNames;
     int m_downloadingCount;
-    QList<DownloadItem*> m_list;
+    QList<DownloadListItem*> m_list;
 };
 
 #endif

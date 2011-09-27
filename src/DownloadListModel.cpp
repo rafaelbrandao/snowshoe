@@ -1,6 +1,6 @@
 #include "DownloadListModel.h"
 
-#include "DownloadItem.h"
+#include "DownloadListItem.h"
 
 #include <QtCore/QFile>
 #include <QtCore/QSettings>
@@ -12,10 +12,10 @@ DownloadListModel::DownloadListModel(QObject* parent)
     : QAbstractListModel(parent)
     , m_downloadingCount(0)
 {
-    m_roleNames[DownloadItem::Filename] = "filename";
-    m_roleNames[DownloadItem::StatusText] = "statusText";
-    m_roleNames[DownloadItem::TimestampText] = "timestampText";
-    m_roleNames[DownloadItem::ProgressValue] = "progressValue";
+    m_roleNames[DownloadListItem::Filename] = "filename";
+    m_roleNames[DownloadListItem::StatusText] = "statusText";
+    m_roleNames[DownloadListItem::TimestampText] = "timestampText";
+    m_roleNames[DownloadListItem::ProgressValue] = "progressValue";
     setRoleNames(m_roleNames);
     restoreData();
     for (int i = 0; i < m_list.size(); ++i) {
@@ -30,7 +30,7 @@ DownloadListModel::~DownloadListModel()
 {
     storeData();
 
-    DownloadItem* item;
+    DownloadListItem* item;
     for (int i = 0; i < m_list.size(); ++i) {
         item = m_list.at(i);
         delete item;
@@ -57,7 +57,7 @@ void DownloadListModel::onDatabaseRemoved(int pos)
 
 void DownloadListModel::onDataChanged()
 {
-    DownloadItem* item = static_cast<DownloadItem*>(sender());
+    DownloadListItem* item = static_cast<DownloadListItem*>(sender());
     for (int i = 0; i < m_list.size(); ++i) {
         if (m_list.at(i) == item) {
             QModelIndex pos = index(i);
@@ -75,15 +75,15 @@ int DownloadListModel::rowCount(const QModelIndex& parent) const
 
 QVariant DownloadListModel::data(const QModelIndex& index, int role) const
 {
-    DownloadItem* item = m_list.at(index.row());
+    DownloadListItem* item = m_list.at(index.row());
     switch (role) {
-    case DownloadItem::Filename:
+    case DownloadListItem::Filename:
         return item->filename();
-    case DownloadItem::StatusText:
+    case DownloadListItem::StatusText:
         return item->status();
-    case DownloadItem::TimestampText:
+    case DownloadListItem::TimestampText:
         return item->timestamp();
-    case DownloadItem::ProgressValue:
+    case DownloadListItem::ProgressValue:
         return item->progress();
     default:
         return QVariant();
@@ -99,7 +99,7 @@ void DownloadListModel::restoreData()
     QStringList downloadTimestampList = settings.value("downloadTimestampList").toStringList();
 
     for (int i = 0; i < downloadFilenameList.size(); ++i)
-        m_list.append(new DownloadItem(downloadFilenameList.at(i), downloadUrlList.at(i), 100, downloadTimestampList.at(i)));
+        m_list.append(new DownloadListItem(downloadFilenameList.at(i), downloadUrlList.at(i), 100, downloadTimestampList.at(i)));
 }
 
 void DownloadListModel::storeData()
@@ -108,7 +108,7 @@ void DownloadListModel::storeData()
     QStringList downloadUrlList;
     QStringList downloadTimestampList;
 
-    DownloadItem* item;
+    DownloadListItem* item;
     for (int i = 0; i < m_list.size(); ++i) {
         item = m_list.at(i);
         downloadFilenameList.append(item->file());
@@ -125,7 +125,7 @@ void DownloadListModel::storeData()
 
 void DownloadListModel::start(QString filepath, QUrl url)
 {
-    DownloadItem* item = new DownloadItem(filepath, url);
+    DownloadListItem* item = new DownloadListItem(filepath, url);
     connect(item, SIGNAL(dataChanged()), this, SLOT(onDataChanged()));
     connect(item, SIGNAL(downloadingChanged(int)), this, SLOT(onDownloadingChanged(int)));
     if (item->start()) {
@@ -142,7 +142,7 @@ void DownloadListModel::start(QString filepath, QUrl url)
 
 void DownloadListModel::cancel(int pos)
 {
-    DownloadItem* item = m_list.at(pos);
+    DownloadListItem* item = m_list.at(pos);
     m_list.removeAt(pos);
     onDatabaseRemoved(pos);
     delete item;

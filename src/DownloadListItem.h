@@ -1,5 +1,5 @@
-#ifndef DownloadItem_h
-#define DownloadItem_h
+#ifndef DownloadListItem_h
+#define DownloadListItem_h
 
 #include <QtCore/QElapsedTimer>
 #include <QtCore/QFile>
@@ -9,7 +9,7 @@
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
 
-class DownloadItem : public QObject {
+class DownloadListItem : public QObject {
     Q_OBJECT
     Q_PROPERTY(QString file READ file WRITE setFile NOTIFY dataChanged)
     Q_PROPERTY(QString status READ status WRITE setStatus NOTIFY dataChanged)
@@ -19,8 +19,8 @@ class DownloadItem : public QObject {
     Q_PROPERTY(int progress READ progress WRITE setProgress NOTIFY dataChanged)
 
 public:
-    DownloadItem(const QString&, const QUrl&, const int progress = 0, const QString& timestamp = "", QObject* parent = 0);
-    ~DownloadItem();
+    DownloadListItem(const QString&, const QUrl&, const int progress = 0, const QString& timestamp = "", QObject* parent = 0);
+    ~DownloadListItem();
 
     enum {
         Filename = Qt::UserRole,

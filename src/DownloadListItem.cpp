@@ -1,4 +1,4 @@
-#include "DownloadItem.h"
+#include "DownloadListItem.h"
 
 #include <QtCore/QTime>
 
@@ -39,7 +39,7 @@ QString convertTimeToString(qint64 time)
     }
 }
 
-DownloadItem::DownloadItem(const QString& filepath, const QUrl& url, const int progress, const QString& timestamp, QObject* parent)
+DownloadListItem::DownloadListItem(const QString& filepath, const QUrl& url, const int progress, const QString& timestamp, QObject* parent)
     : QObject(parent)
     , m_fileinfo(filepath)
     , m_url(url)
@@ -52,12 +52,12 @@ DownloadItem::DownloadItem(const QString& filepath, const QUrl& url, const int p
         finish();
 }
 
-DownloadItem::~DownloadItem()
+DownloadListItem::~DownloadListItem()
 {
     finish();
 }
 
-bool DownloadItem::start()
+bool DownloadListItem::start()
 {
     if (!m_fileinfo.exists() && !m_url.isEmpty()) {
         m_device.setFileName(m_fileinfo.absoluteFilePath());
@@ -74,25 +74,25 @@ bool DownloadItem::start()
     return false;
 }
 
-void DownloadItem::setFile(const QString& filepath)
+void DownloadListItem::setFile(const QString& filepath)
 {
     m_fileinfo.setFile(filepath);
     emit dataChanged();
 }
 
-void DownloadItem::setStatus(const QString& status)
+void DownloadListItem::setStatus(const QString& status)
 {
     m_status = status;
     emit dataChanged();
 }
 
-void DownloadItem::setTimestamp(const QString& timestamp)
+void DownloadListItem::setTimestamp(const QString& timestamp)
 {
     m_timestamp = timestamp;
     emit dataChanged();
 }
 
-void DownloadItem::setProgress(int progress)
+void DownloadListItem::setProgress(int progress)
 {
     if (m_progress == progress)
         return;
@@ -106,20 +106,20 @@ void DownloadItem::setProgress(int progress)
     emit dataChanged();
 }
 
-void DownloadItem::onReadyRead()
+void DownloadListItem::onReadyRead()
 {
     QByteArray data = m_reply->readAll();
     m_stream.writeRawData(data, data.size());
 }
 
-void DownloadItem::onReplyFinished()
+void DownloadListItem::onReplyFinished()
 {
     finish();
     setProgress(100);
     setTimestamp(QTime::currentTime().toString("h:mmA"));
 }
 
-void DownloadItem::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
+void DownloadListItem::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
 {
     qint64 elapsedTime = m_timer.elapsed();
     qint64 downloadSpeed = 0;
@@ -145,7 +145,7 @@ void DownloadItem::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
         setProgress(bytesReceived * 100 / bytesTotal);
 }
 
-void DownloadItem::finish()
+void DownloadListItem::finish()
 {
     if (m_device.isOpen())
         m_device.close();
