@@ -99,7 +99,7 @@ void DownloadListModel::restoreData()
     QStringList downloadTimestampList = settings.value("downloadTimestampList").toStringList();
 
     for (int i = 0; i < downloadFilenameList.size(); ++i)
-        m_list.append(new DownloadListItem(downloadFilenameList.at(i), downloadUrlList.at(i), 100, downloadTimestampList.at(i)));
+        m_list.append(new DownloadListItem(downloadFilenameList.at(i), downloadUrlList.at(i), 0, 100, downloadTimestampList.at(i)));
 }
 
 void DownloadListModel::storeData()
@@ -112,7 +112,7 @@ void DownloadListModel::storeData()
     for (int i = 0; i < m_list.size(); ++i) {
         item = m_list.at(i);
         downloadFilenameList.append(item->file());
-        downloadUrlList.append(item->url().toString());
+        downloadUrlList.append(item->url());
         downloadTimestampList.append(item->timestamp());
     }
 
@@ -122,27 +122,24 @@ void DownloadListModel::storeData()
     settings.setValue("downloadTimestampList", downloadTimestampList);
 }
 
-
-void DownloadListModel::start(QString filepath, QUrl url)
+void DownloadListModel::start(QWebDownloadItem* download)
 {
-    DownloadListItem* item = new DownloadListItem(filepath, url);
-    connect(item, SIGNAL(dataChanged()), this, SLOT(onDataChanged()));
-    connect(item, SIGNAL(downloadingChanged(int)), this, SLOT(onDownloadingChanged(int)));
-    if (item->start()) {
-        m_list.prepend(item);
-        onDatabaseInserted(0);
-        onDownloadingChanged(1);
-        storeData();
-    }
-    else {
-        delete item;
-        item = 0;
-    }
+    DownloadListItem* item = new DownloadListItem(download->destinationPath(), download->sourceUrl(), 0, download->expectedContentLength());
+    connect(download, SIGNAL(dataReceived(quint64)), item, SLOT(onDownloadProgress(qint64)));
+    connect(download, SIGNAL(finished()), item, SLOT(onDownloadFinished()));
+    connect(download, SIGNAL(failed(QWebDownloadItem::Error, const QUrl&, const QString&)), item, SLOT(onDownloadError(QWebDownloadItem::Error, const QUrl&, const QString&)));
+    connect(item, SIGNAL(downloadCancelled()), download, SLOT(cancel()));
+
+    m_list.prepend(item);
+    onDatabaseInserted(0);
+    onDownloadingChanged(1);
+    storeData();
 }
 
 void DownloadListModel::cancel(int pos)
 {
     DownloadListItem* item = m_list.at(pos);
+    emit item->downloadCancelled();
     m_list.removeAt(pos);
     onDatabaseRemoved(pos);
     delete item;

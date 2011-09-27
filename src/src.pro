@@ -26,7 +26,8 @@ HEADERS += \
     DatabaseManager.h \
     DownloadManagerWindow.h \
     PopupMenu.h \
-    BookmarkFilter.h
+    BookmarkFilter.h \
+    QWebDownloadItem.h
 
 RESOURCES += \
     snowshoe.qrc
@@ -88,3 +89,4 @@ OTHER_FILES += \
     qml/BookmarkBarDelegate.qml \
     qml/DropDownMenuBookmarkDelegate.qml \
     qml/Button.qml
+

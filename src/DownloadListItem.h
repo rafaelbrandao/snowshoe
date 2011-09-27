@@ -8,6 +8,10 @@
 #include <QtCore/QUrl>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
+#include "QWebDownloadItem.h"
+
+
+class DownloadListModel;
 
 class DownloadListItem : public QObject {
     Q_OBJECT
@@ -17,9 +21,10 @@ class DownloadListItem : public QObject {
     Q_PROPERTY(QUrl url READ url NOTIFY dataChanged)
     Q_PROPERTY(QString filename READ filename NOTIFY dataChanged)
     Q_PROPERTY(int progress READ progress WRITE setProgress NOTIFY dataChanged)
+    friend class DownloadListModel;
 
 public:
-    DownloadListItem(const QString&, const QUrl&, const int progress = 0, const QString& timestamp = "", QObject* parent = 0);
+    DownloadListItem(const QString&, const QString&, const quint64& bytesReceived = 0, const quint64& bytesTotal = 0, const QString& timestamp = "", QObject* parent = 0);
     ~DownloadListItem();
 
     enum {
@@ -40,34 +45,32 @@ public:
     QString timestamp() const { return m_timestamp; }
     void setTimestamp(const QString&);
 
-    QUrl url() const { return m_url; }
+    QString url() const { return m_url; }
 
     int progress() const { return m_progress; }
     void setProgress(int);
 
-    bool start();
-    void finish();
-
 signals:
     void dataChanged();
     void downloadingChanged(int delta);
+    void downloadCancelled();
 
 private slots:
-    void onReplyFinished();
-    void onReadyRead();
-    void onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
+    void onDownloadFinished();
+    void onDownloadProgress(qint64 bytesReceived);
+    void onDownloadError(QWebDownloadItem::Error, const QUrl&, const QString&);
 
 private:
+    void finish();
+
     QFileInfo m_fileinfo;
-    QUrl m_url;
+    QString m_url;
     QString m_timestamp;
     QString m_status;
     int m_progress;
-    QNetworkAccessManager m_manager;
-    QFile m_device;
-    QNetworkReply* m_reply;
-    QDataStream m_stream;
     QElapsedTimer m_timer;
+    quint64 m_bytesReceived;
+    quint64 m_bytesTotal;
 };
 
 #endif

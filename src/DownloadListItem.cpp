@@ -39,39 +39,25 @@ QString convertTimeToString(qint64 time)
     }
 }
 
-DownloadListItem::DownloadListItem(const QString& filepath, const QUrl& url, const int progress, const QString& timestamp, QObject* parent)
+DownloadListItem::DownloadListItem(const QString& filepath, const QString& url, const quint64& bytesReceived, const quint64& bytesTotal, const QString& timestamp, QObject* parent)
     : QObject(parent)
     , m_fileinfo(filepath)
     , m_url(url)
     , m_timestamp(timestamp)
-    , m_progress(progress)
-    , m_reply(0)
+    , m_progress(0)
+    , m_bytesReceived(bytesReceived)
+    , m_bytesTotal(bytesTotal)
 {
-    m_stream.setDevice(&m_device);
-    if (m_progress == 100)
+    m_timer.restart();
+    if (m_bytesTotal)
+        m_progress = m_bytesReceived / m_bytesTotal;
+    if (m_progress >= 100)
         finish();
 }
 
 DownloadListItem::~DownloadListItem()
 {
     finish();
-}
-
-bool DownloadListItem::start()
-{
-    if (!m_fileinfo.exists() && !m_url.isEmpty()) {
-        m_device.setFileName(m_fileinfo.absoluteFilePath());
-        if (m_device.open(QIODevice::WriteOnly)) {
-            m_reply = m_manager.get(QNetworkRequest(m_url));
-            connect(m_reply, SIGNAL(finished()), this, SLOT(onReplyFinished()));
-            connect(m_reply, SIGNAL(downloadProgress(qint64, qint64)), this, SLOT(onDownloadProgress(qint64, qint64)));
-            connect(m_reply, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
-            setProgress(0);
-            m_timer.restart();
-            return true;
-        }
-    }
-    return false;
 }
 
 void DownloadListItem::setFile(const QString& filepath)
@@ -94,6 +80,11 @@ void DownloadListItem::setTimestamp(const QString& timestamp)
 
 void DownloadListItem::setProgress(int progress)
 {
+    if (progress > 100)
+        progress = 100;
+    else if (progress < 0)
+        progress = 0;
+
     if (m_progress == progress)
         return;
 
@@ -106,58 +97,49 @@ void DownloadListItem::setProgress(int progress)
     emit dataChanged();
 }
 
-void DownloadListItem::onReadyRead()
-{
-    QByteArray data = m_reply->readAll();
-    m_stream.writeRawData(data, data.size());
-}
-
-void DownloadListItem::onReplyFinished()
+void DownloadListItem::onDownloadFinished()
 {
     finish();
     setProgress(100);
     setTimestamp(QTime::currentTime().toString("h:mmA"));
 }
 
-void DownloadListItem::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
+void DownloadListItem::onDownloadProgress(qint64 bytesReceived)
 {
-    qint64 elapsedTime = m_timer.elapsed();
-    qint64 downloadSpeed = 0;
-    if (elapsedTime)
-        downloadSpeed = bytesReceived * qint64(1000) / elapsedTime;
+    m_bytesReceived += bytesReceived;
 
-    double timeLeft = (double) elapsedTime / (double) bytesReceived;
-    timeLeft *= bytesTotal;
-    timeLeft -= elapsedTime;
-    timeLeft /= 1000;
+    quint64 elapsedTime = m_timer.elapsed();
+    quint64 downloadSpeed = 0;
+    if (elapsedTime)
+        downloadSpeed = m_bytesReceived * quint64(1000) / elapsedTime;
+
+    double timeLeft = (double) elapsedTime / (double) m_bytesReceived;
+    timeLeft = ((timeLeft * m_bytesTotal) - elapsedTime) / 1000.0;
 
     QString format("Finish in %1 - %2 of %3 (%4/s)");
     format = format.arg(convertTimeToString(timeLeft));
-    format = format.arg(convertSizeToString(bytesReceived));
-    format = format.arg(convertSizeToString(bytesTotal));
+    format = format.arg(convertSizeToString(m_bytesReceived));
+    format = format.arg(convertSizeToString(m_bytesTotal));
     format = format.arg(convertSizeToString(downloadSpeed));
     setStatus(format);
 
-    if (bytesTotal == -1) {
+    if (!m_bytesTotal) {
         // FIXME: Not sure of how we should handle when we don't know the file size.
         setProgress(0);
     } else
-        setProgress(bytesReceived * 100 / bytesTotal);
+        setProgress(m_bytesReceived * 100 / m_bytesTotal);
+}
+
+void DownloadListItem::onDownloadError(QWebDownloadItem::Error, const QUrl&, const QString& description)
+{
+    setStatus(QString("Error: %1").arg(description));
 }
 
 void DownloadListItem::finish()
 {
-    if (m_device.isOpen())
-        m_device.close();
-
-    if (m_reply) {
-        delete m_reply;
-        m_reply = 0;
-    }
-
     m_fileinfo.refresh();
     if (m_fileinfo.exists())
-        setStatus(QString("%1 - %2").arg(convertSizeToString(m_fileinfo.size())).arg(url().toString()));
+        setStatus(QString("%1 - %2").arg(convertSizeToString(m_fileinfo.size())).arg(url()));
     else
-        setStatus(url().toString());
+        setStatus(url());
 }

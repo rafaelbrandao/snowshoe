@@ -32,8 +32,6 @@ Item {
             right: 5
             bottom: 5
         }
-
-        // FIXME: This is just for testing.
     }
 
     BorderImage {

@@ -5,6 +5,7 @@
 #include <QtCore/QUrl>
 
 class DownloadListItem;
+class QWebDownloadItem;
 
 class DownloadListModel : public QAbstractListModel {
     Q_OBJECT
@@ -18,8 +19,9 @@ public:
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
     int downloadingCount() const { return m_downloadingCount; }
 
-    Q_INVOKABLE void start(QString filepath, QUrl url);
-    Q_INVOKABLE void cancel(int);
+    //Q_INVOKABLE void start(QString filepath, QUrl url);
+    Q_INVOKABLE void start(QWebDownloadItem* download);
+    Q_INVOKABLE void cancel(int index);
 
 signals:
     void downloadingCountChanged();
