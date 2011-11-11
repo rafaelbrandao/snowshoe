@@ -145,6 +145,16 @@ Item {
             visible: pageWidget != undefined && pageWidget.isLoading;
         }
 
+        Image {
+            id: favicon
+            source: pageWidget != undefined ? pageWidget.webView.favIconSource : ""
+            anchors.top: parent.top
+            anchors.left: leftImage.left
+            anchors.topMargin: 9
+            anchors.leftMargin: 13
+            visible: !spinner.visible
+        }
+
         Text {
             id: tabText
             width: parent.width
