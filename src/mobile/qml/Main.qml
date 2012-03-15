@@ -72,6 +72,28 @@ Rectangle {
                 rootPage.state = "navigationFullScreen"
                 newUrlBar.text = ""
             }
+
+            Rectangle {
+                color: "#999"
+                height: parent.height - 2
+                width: height
+                radius: height / 2
+                Text {
+                    color: "#fff"
+                    text: "X"
+                    anchors.centerIn: parent
+                }
+                anchors.right: parent.right
+                anchors.leftMargin: 2
+                visible: newUrlBar.text != ""
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        console.log('close clicked!')
+                        newUrlBar.text = ""
+                    }
+                }
+            }
         }
 
         MouseArea {
@@ -91,6 +113,13 @@ Rectangle {
         anchors.bottom: plusButton.top
         anchors.bottomMargin: 26
         onSuggestionSelected: newUrlBar.text = suggestedUrl
+        onSearchSelected: {
+            var webView = navigationPanel.currentWebView()
+            webView.url = "http://www.google.com/search?q=" + newUrlBar.text.replace(" ", "+")
+            rootPage.state = "navigationFullScreen"
+            newUrlBar.text = ""
+        }
+
         // Only lookup suggestions once you have at least 2 characters to provide better results.
         opacity: newUrlBar.text != newUrlBar.previousUrl && newUrlBar.text.length >= 2 ? 1 : 0
     }

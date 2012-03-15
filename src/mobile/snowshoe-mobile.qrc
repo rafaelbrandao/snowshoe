@@ -32,5 +32,7 @@
         <file alias="navbar/btn_nav_settings_unpressed">../desktop/images/urlbar/component_btn_settings.png</file>
         <file alias="navbar/btn_nav_settings_pressed">../desktop/images/urlbar/component_btn_settings.png</file>
         <file alias="navbar/component_divisor">../desktop/images/urlbar/component_divisor.png</file>
+        <file alias="img/googleIcon">img/google.png</file>
+        <file>qml/SuggestionItem.qml</file>
     </qresource>
 </RCC>

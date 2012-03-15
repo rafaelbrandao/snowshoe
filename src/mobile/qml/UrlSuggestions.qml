@@ -4,66 +4,46 @@ import "UiConstants.js" as UiConstants
 Item {
     id: urlSuggestions
     signal suggestionSelected(string suggestedUrl)
+    signal searchSelected()
 
     // FIXME: implement this model in C++ to provide valid and related data (i.e using history)
     ListModel {
         id: suggestionsModel
-        ListElement { url: "google.com" }
-        ListElement { url: "facebook.com" }
-        ListElement { url: "webkit.org" }
+        ListElement { suggestedUrl: "facebook.com" }
+        ListElement { suggestedUrl: "webkit.org" }
+    }
+
+    SuggestionItem {
+        id: searchItem
+        isSearch: true
+        anchors {
+            top: urlSuggestions.top
+            left: urlSuggestions.left
+            right: urlSuggestions.right
+        }
+        onSearchSelected: urlSuggestions.searchSelected()
     }
 
     ListView {
-        anchors.fill: parent
+        id: suggestionsList
+        anchors {
+            top: searchItem.bottom
+            left: urlSuggestions.left
+            right: urlSuggestions.right
+            bottom: urlSuggestions.bottom
+        }
         clip: true
         model: suggestionsModel
         delegate: suggestedItemPrototype
-        interactive: false // If we may have more than 3 displayed results, then remove this.
+        interactive: false // If we may have more than 2 displayed results, then remove this.
     }
 
     Component {
         id: suggestedItemPrototype
-
-        Item {
-            id: suggestedItem
-            height: 121
-            width: parent.width
-
-            Rectangle {
-                id: suggestionRect
-                color: mouseArea.pressed ? bottomBorder.color : "transparent"
-                anchors.fill: parent
-                Rectangle {
-                    id: bottomBorder
-                    color: "#555"
-                    height: 1
-                    anchors {
-                        bottom: parent.bottom
-                        left: parent.left
-                        right: parent.right
-                    }
-                }
-            }
-
-            Text {
-                id: suggestedUrl
-                text: url
-                color: mouseArea.pressed ? "#fff" : "#111"
-                font.pixelSize: UiConstants.DefaultFontSize
-                font.family: UiConstants.DefaultFontFamily
-                baselineOffset: 2
-                anchors.verticalCenter: suggestedItem.verticalCenter
-                anchors.left: parent.left
-                anchors.leftMargin: UiConstants.DefaultMargin
-                anchors.rightMargin: UiConstants.DefaultMargin
-                anchors.right:  parent.right
-            }
-
-            MouseArea {
-                id: mouseArea
-                anchors.fill: parent
-                onClicked: urlSuggestions.suggestionSelected(suggestedUrl.text)
-            }
+        SuggestionItem {
+            url: suggestedUrl
+            width: suggestionsList.width
+            onSuggestionSelected: urlSuggestions.suggestionSelected(url)
         }
     }
 
