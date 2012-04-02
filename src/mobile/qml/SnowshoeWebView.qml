@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtWebKit 3.0
+import QtWebKit.experimental 1.0
 
 import "UiConstants.js" as UiConstants
 
@@ -24,6 +25,22 @@ Item {
     function reload() { webView.reload() }
     function stop() { webView.stop() }
 
+
+    // FIXME: cannot do property bind to experimental attributes (https://bugs.webkit.org/show_bug.cgi?id=82960)
+    property bool scrolledUpToBoundary: false
+    onScrolledUpToBoundaryChanged: {
+        if (!scrolledUpToBoundary)
+            return;
+
+        navBar.state = "visible";
+        webViewItem.y = navBar.height;
+        webView.experimental.contentY = 0;
+        if (webView.loading)
+            navBar.hidingTimer.stop();
+        else
+            navBar.hidingTimer.restart();
+    }
+
     Behavior on y {
         NumberAnimation { duration: 200 }
     }
@@ -46,6 +63,10 @@ Item {
                 return
             webView.loadHtml(UiConstants.HtmlFor404Page)
         }
+
+        experimental.onContentYChanged: scrolledUpToBoundary = webView.experimental.contentY < 0
+
+
     }
 
     Image {
@@ -96,5 +117,10 @@ Item {
                 onClicked: closeTabRequested();
             }
         }
+    }
+
+    Component.onCompleted: {
+        if (webView.experimental && webView.experimental.flickable)
+            webView.experimental.flickable.flickableDirection = Flickable.HorizontalAndVerticalFlick
     }
 }
