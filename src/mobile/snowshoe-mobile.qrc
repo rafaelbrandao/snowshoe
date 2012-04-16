@@ -29,6 +29,7 @@
         <file alias="fav/icon01">images/fav_01.png</file>
         <file alias="fav/icon02">images/fav_02.png</file>
         <file alias="fav/icon03">images/fav_03.png</file>
+        <file alias="fav/icon04">images/fav_04.png</file>
         <file alias="indicator/loading_active">images/pagination_active.png</file>
         <file alias="indicator/loading_inactive">images/pagination_inactive.png</file>
         <file alias="indicator/loading_0">images/pagination_loading_00.png</file>
