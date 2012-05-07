@@ -98,7 +98,7 @@ Item {
             topMargin: 25
         }
         itemCount: tabsGrid.pageCount
-        currentItem: tabsGrid.page
+        currentItem: tabsGrid.currentPage
         visible: !tabBarRow.visible
     }
 
