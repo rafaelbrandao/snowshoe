@@ -17,16 +17,6 @@
 
 #include "BrowserWindowMobile.h"
 
-#include "BookmarkModel.h"
-#include "DatabaseManager.h"
-#include "HistoryModel.h"
-#include "TabsModel.h"
-#include "UrlTools.h"
-#include <QtCore/QCoreApplication>
-#include <QtQml/QQmlContext>
-#include <QtQml/QQmlEngine>
-#include <QtQuick/QQuickItem>
-
 BrowserWindowMobile::BrowserWindowMobile()
 {
     setWindowFlags(Qt::Window);

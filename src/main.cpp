@@ -14,18 +14,12 @@
  *   GNU Lesser General Public License for more details.                    *
  ****************************************************************************/
 
-#include "desktop/BrowserWindow.h"
 #include "mobile/BrowserWindowMobile.h"
-
-#include "RowsRangeFilter.h"
-#include "DatabaseManager.h"
-#include "PopupWindow.h"
 
 #include <QtCore/QAbstractItemModel>
 #include <QtCore/QLatin1String>
+#include <QtCore/QStringList>
 #include <QtWidgets/QApplication>
-#include <QtQml/QtQml>
-#include <private/qquickwebview_p.h>
 
 int main(int argc, char** argv)
 {
@@ -39,31 +33,10 @@ int main(int argc, char** argv)
     app.setOrganizationName(QLatin1String("Snowshoe"));
     app.setApplicationVersion("1.0.0");
 
-    qmlRegisterType<RowsRangeFilter>("Snowshoe", 1, 0, "RowsRangeFilter");
-    qmlRegisterUncreatableType<QAbstractItemModel>("Snowshoe", 1, 0, "QAbstractItemModel", QObject::tr("You can't create a QAbstractItemModel"));
-    qmlRegisterType<PopupWindow>("Snowshoe", 1, 0, "PopupWindow");
-
-    DatabaseManager::instance()->initialize();
-
     QStringList arguments = app.arguments();
-    QWindow* window;
-    if (arguments.contains(QLatin1String("--mobile")))
-        window = new BrowserWindowMobile();
-    else {
-        int pos = arguments.indexOf(QLatin1String("--desktop"));
-        if (pos != -1)
-            arguments.removeAt(pos);
-        arguments = arguments.mid(1);
-        QQuickWebViewExperimental::setFlickableViewportEnabled(false);
-        window = new BrowserWindow(arguments);
-    }
+    QWindow* window = new BrowserWindowMobile();
 
-#if defined(SNOWSHOE_MEEGO_HARMATTAN)
-    bool fullScreen = true;
-#else
     bool fullScreen = false;
-#endif
-
     if (arguments.contains(QLatin1String("--fullscreen")))
         fullScreen = true;
     else if (arguments.contains(QLatin1String("--no-fullscreen")))
@@ -75,6 +48,5 @@ int main(int argc, char** argv)
         window->show();
 
     app.exec();
-    DatabaseManager::instance()->destroy();
     return 0;
 }
