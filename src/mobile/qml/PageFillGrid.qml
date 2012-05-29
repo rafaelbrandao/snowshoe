@@ -15,7 +15,6 @@
  ****************************************************************************/
 
 import QtQuick 2.0
-import Snowshoe 1.0
 
 Item {
     id: root
@@ -60,35 +59,14 @@ Item {
         }
     }
 
-    Row {
+    GridView {
         id: pages
-        spacing: root.spacing
-
-        Repeater {
-            id: pageRepeater
-            model: pageCount
-
-            Grid {
-                property alias thumbs: thumbRepeater
-                width: pageWidth
-                height: pageHeight
-                spacing: root.spacing
-                columns: root.columnsPerPage
-
-                RowsRangeFilter {
-                    id: currentPageModel
-                    sourceModel: root.model
-                    startRow: index * itemsPerPage
-                    endRow: startRow + itemsPerPage - 1
-                }
-
-                Repeater {
-                    id: thumbRepeater
-                    model: currentPageModel
-                    delegate: pagedGrid.delegate
-                }
-            }
-        }
+        model: root.model
+        cellWidth: root.itemWidth
+        cellHeight: root.itemHeight
+        height: pageHeight
+        width: pageWidth * maxPages
+        delegate: root.delegate
     }
 
     Grid {

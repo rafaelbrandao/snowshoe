@@ -28,7 +28,6 @@ public:
 
 private:
     void setupDeclarativeEnvironment();
-    QQuickItem* m_browserView;
 };
 
 #endif

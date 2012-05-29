@@ -51,8 +51,8 @@ Item {
         anchors.fill: parent
         enabled: webViewItem.active && webViewItem.interactive
 
-        experimental.preferredMinimumContentsWidth: 980
-        experimental.devicePixelRatio: 1.5
+        //experimental.preferredMinimumContentsWidth: 980
+        //experimental.devicePixelRatio: 1.5
 
         onLoadingChanged: {
             if (webView.url == "about:blank")

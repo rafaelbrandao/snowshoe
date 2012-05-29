@@ -28,30 +28,14 @@
 #include <QtQuick/QQuickItem>
 
 BrowserWindowMobile::BrowserWindowMobile()
-    : m_browserView(0)
 {
-    setWindowFlags(Qt::Window | Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
+    setWindowFlags(Qt::Window);
     setupDeclarativeEnvironment();
-    m_browserView = qobject_cast<QQuickItem*>(rootObject());
-    Q_ASSERT(m_browserView);
 }
 
 void BrowserWindowMobile::setupDeclarativeEnvironment()
 {
-    QQmlContext* context = rootContext();
-    context->setContextProperty("BrowserWindow", this);
-
-    DatabaseManager* dbManager = DatabaseManager::instance();
-    context->setContextProperty("HistoryModel", dbManager->historyDataBaseModel());
-    context->setContextProperty("BookmarkModel", dbManager->bookmarkDataBaseModel());
-    context->setContextProperty("TabsModel", new TabsModel(this));
-    context->setContextProperty("UrlTools", new UrlTools(this));
-
-    QObject::connect(engine(), SIGNAL(quit()), qApp, SLOT(quit()));
-
-    setResizeMode(QQuickView::SizeRootObjectToView);
 #if defined(SNOWSHOE_MEEGO_HARMATTAN)
-    reportContentOrientationChange(Qt::PortraitOrientation);
     setSource(QUrl("qrc:///mobile/qml/main-harmattan.qml"));
 #else
     setSource(QUrl("qrc:///mobile/qml/Main.qml"));
