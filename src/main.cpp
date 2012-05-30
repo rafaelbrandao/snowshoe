@@ -47,6 +47,7 @@ int main(int argc, char** argv)
     else
         window->show();
 
-    app.exec();
-    return 0;
+    int exitCode = app.exec();
+    delete window;
+    return exitCode;
 }
